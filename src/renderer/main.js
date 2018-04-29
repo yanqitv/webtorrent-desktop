@@ -108,10 +108,10 @@ function onState (err, _state) {
     torrentList: createGetter(() => {
       return new TorrentListController(state)
     }),
-    update: createGetter(() => {
-      const UpdateController = require('./controllers/update-controller')
-      return new UpdateController(state)
-    }),
+    // update: createGetter(() => {
+    //   const UpdateController = require('./controllers/update-controller')
+    //   return new UpdateController(state)
+    // }),
     folderWatcher: createGetter(() => {
       const FolderWatcherController = require('./controllers/folder-watcher-controller')
       return new FolderWatcherController()
