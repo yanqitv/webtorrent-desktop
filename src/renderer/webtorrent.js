@@ -19,6 +19,8 @@ const config = require('../config')
 const {TorrentKeyNotFoundError} = require('./lib/errors')
 const torrentPoster = require('./lib/torrent-poster')
 
+const appConfig = require('application-config')('WebTorrent')
+
 // Report when the process crashes
 crashReporter.init()
 
@@ -26,9 +28,7 @@ crashReporter.init()
 const ipc = electron.ipcRenderer
 
 // Force use of webtorrent trackers on all torrents
-global.WEBTORRENT_ANNOUNCE = defaultAnnounceList
-  .map((arr) => arr[0])
-  .filter((url) => url.indexOf('wss://') === 0 || url.indexOf('ws://') === 0)
+global.WebTORRENT_ANNOUNCE = ['wss://tracker.yanqi.tv']
 
 /**
  * WebTorrent version.
@@ -56,9 +56,20 @@ const VERSION_STR = VERSION.match(/([0-9]+)/g)
 const VERSION_PREFIX = '-WD' + VERSION_STR + '-'
 
 /**
- * Generate an ephemeral peer ID each time.
+ * If peer ID isn't given, generate an ephemeral peer ID each time.
  */
-const PEER_ID = Buffer.from(VERSION_PREFIX + crypto.randomBytes(9).toString('base64'))
+var peerId = undefined
+try {
+  if (require(appConfig.filePath).prefs.peerId) {
+    peerId = require(appConfig.filePath).prefs.peerId
+  }
+} catch (e) {
+  console.log('Missing config file: Creating new one')
+}
+
+const PEER_ID = peerId
+  ? Buffer.from(VERSION_PREFIX).toString('hex') + peerId
+  : Buffer.from(VERSION_PREFIX + crypto.randomBytes(9).toString('base64'))
 
 // Connect to the WebTorrent and BitTorrent networks. WebTorrent Desktop is a hybrid
 // client, as explained here: https://webtorrent.io/faq

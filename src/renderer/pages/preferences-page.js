@@ -4,6 +4,7 @@ const React = require('react')
 const colors = require('material-ui/styles/colors')
 const Checkbox = require('material-ui/Checkbox').default
 const RaisedButton = require('material-ui/RaisedButton').default
+const TextField = require('material-ui/TextField').default
 const Heading = require('../components/heading')
 const PathSelector = require('../components/path-selector')
 
@@ -25,6 +26,9 @@ class PreferencesPage extends React.Component {
 
     this.handleStartupChange =
       this.handleStartupChange.bind(this)
+
+    this.handleSetPeerId =
+      this.handleSetPeerId.bind(this)
   }
 
   downloadPathSelector () {
@@ -208,6 +212,25 @@ class PreferencesPage extends React.Component {
     dispatch('updatePreferences', 'isFileHandler', true)
   }
 
+  setPeerId () {
+    return (
+      <Preference>
+        <TextField 
+          className= 'control'
+          type='password'
+          value={ this.props.state.unsaved.prefs.peerId }
+          onChange={ this.handleSetPeerId }
+          floatingLabelText='Please restart application after setting peer id.'
+          floatingLabelFixed={ true }
+        />
+      </Preference >
+    )
+  }
+
+  handleSetPeerId (e, newValue) {
+    dispatch('updatePreferences', 'peerId', newValue)
+  }
+
   render () {
     const style = {
       color: colors.grey400,
@@ -230,6 +253,9 @@ class PreferencesPage extends React.Component {
           {this.setDefaultAppButton()}
         </PreferencesSection>
         {this.setStartupSection()}
+        <PreferencesSection title='Peer Id'>
+          {this.setPeerId()}
+        </PreferencesSection>
       </div>
     )
   }

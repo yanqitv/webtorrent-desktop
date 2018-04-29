@@ -52,11 +52,12 @@ class CreateTorrentPage extends React.Component {
     }
 
     // Default trackers
-    const trackers = createTorrent.announceList.join('\n')
+    // const trackers = createTorrent.announceList.join('\n')
+    const trackers = 'udp://tracker.yanqi.tv:6969\nwss://tracker.yanqi.tv'
 
     this.state = {
       comment: '',
-      isPrivate: false,
+      isPrivate: true,
       pathPrefix,
       basePath,
       defaultName,
